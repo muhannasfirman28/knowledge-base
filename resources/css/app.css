@@ -6,6 +6,601 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-display: 'Archivo', 'Archivo Fallback', sans-serif;
+    --font-body: 'Newsreader', 'Newsreader Fallback', serif;
+    --font-mono: 'Martian Mono', 'Martian Mono Fallback', ui-monospace, monospace;
+}
+
+/* ── Swiss Editorial Design Tokens ── */
+:root {
+    --bg: #ECE9E2;
+    --fg: #111110;
+    --accent: #FF4A1C;
+    --muted: #8A867D;
+
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+
+    --dur-micro: 0.4s;
+    --dur-reveal: 0.8s;
+    --dur-section: 1.2s;
+
+    --stagger-char: 0.04s;
+    --stagger-line: 0.1s;
+
+    --border-px: 1px;
+    --radius: 0;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img,
+picture,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.font-display {
+    font-family: var(--font-display);
+}
+.font-body {
+    font-family: var(--font-body);
+}
+.font-mono {
+    font-family: var(--font-mono);
+}
+
+.text-fg { color: var(--fg); }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--muted); }
+.bg-fg { background-color: var(--fg); }
+.bg-accent { background-color: var(--accent); }
+
+.rule {
+    border-top: var(--border-px) solid var(--fg);
+}
+
+.tracking-tight { letter-spacing: -0.03em; }
+.tracking-loose { letter-spacing: +0.04em; }
+.leading-tight { line-height: 0.85; }
+.uppercase-tight {
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+}
+
+.clip-path-none { clip-path: none; }
+
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01s !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ── Brand/logo spacing ── */
+.portfolio-brand-name {
+    letter-spacing: -0.01em;
+    word-spacing: 0.15ch;
+}
+
+.cursor-hidden {
+    cursor: none;
+}
+
+/* ── Custom Cursor ── */
+.portfolio-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--fg);
+    border-radius: 50%;
+    background: transparent;
+    backdrop-filter: blur(4px);
+    transition: transform 0.2s ease, background 0.2s ease, padding 0.2s ease;
+    will-change: transform;
+}
+.portfolio-cursor-dot {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--fg);
+    transform: scale(1);
+    transition: transform 0.2s ease;
+}
+.portfolio-cursor-label {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translatex(-50%);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: +0.04em;
+    background: var(--fg);
+    color: var(--bg);
+    padding: 1px 6px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+/* ── Progress Bar ── */
+.portfolio-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 1px;
+    background: var(--fg);
+    z-index: 50;
+    width: 0%;
+    transform-origin: left;
+}
+
+/* ── Mono Label ── */
+.portfolio-mono-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* ── Project Card Tilt ── */
+.portfolio-project-tilt-container {
+    position: relative;
+    overflow: hidden;
+    aspect-[16/9];
+}
+.portfolio-project-tilt-card {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease;
+    will-change: transform;
+}
+
+/* ── PortraitSlot ── */
+.portrait-slot {
+    position: relative;
+    display: inline-block;
+}
+.portrait-accent {
+    opacity: 0;
+}
+.portrait-frame {
+    box-sizing: border-box;
+}
+.portrait-registration,
+.portrait-illustration {
+    overflow: visible;
+}
+.portrait-caption {
+    margin-top: 0.75rem;
+}
+.portrait-bubble {
+    display: none;
+}
+
+/* ── Section spacing ── */
+.portfolio-section {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+}
+.portfolio-section-header {
+    margin-bottom: 2.5rem;
+}
+
+/* ── Nav link spacing ── */
+.portfolio-nav-link {
+    margin-right: 1.5rem;
+}
+@media (min-width: 768px) {
+    .portfolio-nav-link {
+        margin-right: 2rem;
+    }
+}
+
+/* ── Section components ── */
+.portfolio-section-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "wdth" 70, "wght" 800;
+    letter-spacing: -0.03em;
+    line-height: 0.85;
+}
+.portfolio-section-rule {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+.portfolio-section-intro {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    max-width: 46ch;
+}
+
+/* ── Hero ── */
+.portfolio-hero-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.portfolio-hero-name {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-variation-settings: "wdth" 65, "wght" 900;
+    letter-spacing: -0.02em;
+    line-height: 0.85;
+    font-size: clamp(6rem, 12vw, 14rem);
+    text-transform: uppercase;
+}
+.portfolio-hero-headline {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "wdth" 75, "wght" 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    text-transform: uppercase;
+}
+.portfolio-hero-description {
+    font-family: var(--font-body);
+    font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 48ch;
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+.portfolio-hero-meta {
+    color: var(--muted);
+}
+.portfolio-hero-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--fg);
+    border-radius: 50%;
+}
+.portfolio-hero-actions {
+    gap: 1rem;
+}
+.portfolio-btn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    border: 1px solid var(--fg);
+    padding: 0.75rem 1.5rem;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+.portfolio-btn--primary {
+    background: var(--fg);
+    color: var(--bg);
+}
+.portfolio-btn--primary:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+}
+.portfolio-btn--outline {
+    background: transparent;
+    color: var(--fg);
+}
+.portfolio-btn--outline:hover {
+    background: var(--fg);
+    color: var(--bg);
+}
+
+/* ── About ── */
+.portfolio-about-description {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--fg);
+    max-width: 48ch;
+}
+.portfolio-info-card {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+}
+.portfolio-info-title {
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+}
+.portfolio-info-value {
+    color: var(--fg);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 0.25rem;
+}
+.portfolio-info-sub {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+.portfolio-interest-item {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--fg);
+}
+
+/* ── Experience ── */
+.portfolio-timeline-job {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "wdth" 70, "wght" 800;
+    letter-spacing: -0.02em;
+    font-size: 1.25rem;
+    text-transform: uppercase;
+}
+.portfolio-timeline-company {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+.portfolio-timeline-company-short {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.portfolio-timeline-period {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+.portfolio-timeline-description {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--muted);
+    max-width: 48ch;
+}
+.portfolio-timeline-responsibilities-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+.portfolio-timeline-list-item {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--fg);
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+.portfolio-timeline-list-item::before {
+    content: "0";
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+/* ── Skills ── */
+.portfolio-skill-category-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+}
+.portfolio-skill-item {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--fg);
+    margin-bottom: 0.4rem;
+}
+.portfolio-skills-note {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* ── Certifications ── */
+.portfolio-certification-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "wdth" 70, "wght" 800;
+    letter-spacing: -0.02em;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+.portfolio-certification-issuer,
+.portfolio-certification-year {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.portfolio-certification-description {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--fg);
+}
+.portfolio-certification-verify {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+.portfolio-certifications-empty-icon {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+}
+.portfolio-certifications-empty-text {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+/* ── Contact ── */
+.portfolio-contact-headline {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-variation-settings: "wdth" 65, "wght" 900;
+    letter-spacing: -0.03em;
+    line-height: 0.85;
+    font-size: clamp(3rem, 10vw, 8rem);
+    text-transform: uppercase;
+}
+.portfolio-contact-description {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--muted);
+    max-width: 48ch;
+}
+.portfolio-contact-item-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.portfolio-contact-item-value {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--fg);
+}
+.portfolio-social--disabled {
+    color: var(--muted);
+    cursor: not-allowed;
+    text-decoration: none;
+}
+.portfolio-social-soon {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+/* ── Footer ── */
+.portfolio-footer-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.portfolio-footer-email-link {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "wdth" 70, "wght" 800;
+    letter-spacing: -0.02em;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+}
+.portfolio-footer-rights {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.portfolio-footer-social-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+    color: var(--fg);
+    text-decoration: none;
+}
+.portfolio-footer-social-link:hover {
+    color: var(--accent);
+}
+.portfolio-footer-placeholder-note {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+/* ── Preloader ── */
+.portfolio-preloader-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: +0.04em;
+    text-transform: uppercase;
+}
+.portfolio-preloader-counter {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-variation-settings: "wdth" 65, "wght" 900;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+.portfolio-preloader-curtain {
+    clip-path: inset(0);
 }

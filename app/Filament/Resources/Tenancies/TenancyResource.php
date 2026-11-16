@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class TenancyResource extends Resource
 {
@@ -21,6 +22,10 @@ class TenancyResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'id';
+
+    protected static ?string $navigationLabel = "Penyewaan";
+
+    protected static string|UnitEnum|null $navigationGroup = 'Sewa';
 
     public static function form(Schema $schema): Schema
     {

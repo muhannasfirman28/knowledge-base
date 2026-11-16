@@ -1,59 +1,150 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Muhammad Annas Firman — Portfolio (Laravel)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Personal portfolio of Muhammad Annas Firman, Full-Stack Web Developer (Information Systems graduate, strong interest in backend), Serang, Banten, Indonesia.
 
-## About Laravel
+**Design direction:** Swiss / Editorial. Light theme only. Warm paper background (`#ECE9E2`), single vermilion accent (`#FF4A1C`), visible 12-column grid, oversized typography, mono labels, 1px rules.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Backend:** PHP 8.2+, Laravel 12, MySQL
+- **Frontend:** Laravel Blade, HTML5, CSS3, Vanilla JavaScript
+- **Animation & 3D:** GSAP + ScrollTrigger, Lenis, Three.js
+- **Build:** Vite (Tailwind CSS v4)
+- **Localization:** Laravel built-in localization (`lang/id/`, `lang/en/`)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+No React, No Next.js, No Vue, No TypeScript, No component library.
 
-## Learning Laravel
+## Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP 8.2+
+- Composer
+- Node.js 18+ & npm
+- MySQL (optional — portfolio falls back to language files if DB unavailable)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+```bash
+# 1. Masuk ke folder proyek
+cd "C:\Users\Muhammad Annas\Downloads"
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# 2. Install PHP dependencies
+composer install --no-interaction
 
-### Premium Partners
+# 3. Salin .env.example menjadi .env
+cp .env.example .env
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# 4. Generate APP_KEY
+php artisan key:generate
 
-## Contributing
+# 5. (Opsional) Jalankan migration jika MySQL tersedia
+php artisan migrate --force
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 6. Install JS dependencies
+npm install
 
-## Code of Conduct
+# 7. Build frontend assets
+npm run build
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Running
 
-## Security Vulnerabilities
+```bash
+# Laravel development server
+php artisan serve --port=8000
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Vite dev server (untuk development aset)
+npm run dev
 
-## License
+# Buka di browser
+# http://localhost:8000/portfolio
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Configuration
+
+Edit `.env` untuk menyesuaikan:
+- `APP_NAME`, `APP_URL`
+- `APP_LOCALE=id` (default Bahasa Indonesia)
+- Database MySQL (opsional)
+- Mail SMTP untuk contact form
+
+## Bilingual Content
+
+Semua teks tersimpan dalam file lokalisasi:
+- `lang/id/portfolio.php` — Bahasa Indonesia
+- `lang/en/portfolio.php` — English
+
+Perubahan bahasa disimpan di session dan preserved saat navigate / refresh.
+
+Pengguna dapat berbahasa melalui tombol **ID | EN** di navbar.
+
+## Contact Form
+
+Contact form dihalaman portfolio menggunakan Laravel validation + CSRF protection. Email akan dikirim jika SMTP dikonfigurasi di `.env`. Jika belum, pesan hanya dicatat ke log dan ditampilkan flash message sukses.
+
+## Portrait Component
+
+Komponen portrait ada di `resources/views/components/portrait-slot.blade.php`. Secara default berjalan dalam mode **illustration** (SVG geometris editorial).
+
+Untuk beralih ke mode **photo** (tidak perlu mengubah section lain):
+1. Letakkan `public/photo/portrait.jpg` dan opsional `public/photo/portrait-cutout.png`
+2. Sesuaikan `portrait-slot.blade.php` untuk render `` alih-nya SVG
+
+## Project Screenshots
+
+Project cards menggunakan **screenshot placeholder 16:9** (outline box). Ganti dengan screenshot proyek nyata di `public/images/` atau `public/screenshots/`.
+
+## Deploy
+
+```bash
+npm run build      # Vite production build → dist/
+# Unggah isi dist/ dan semua file Laravel ke web server
+# Konfigurasi web server untuk menjalankan Laravel (public/ sebagai document root)
+```
+
+## Project Structure
+
+```text
+app/
+├── Http/
+│   └── Controllers/
+│       ├── PortfolioController.php
+│       ├── LanguageController.php
+│       └── ContactController.php
+resources/
+├── views/
+│   ├── layouts/portfolio.blade.php
+│   ├── components/
+│   │   ├── navbar.blade.php
+│   │   ├── footer.blade.php
+│   │   ├── language-switcher.blade.php
+│   │   └── portrait-slot.blade.php
+│   ├── sections/
+│   │   ├── hero.blade.php
+│   │   ├── about.blade.php
+│   │   ├── experience.blade.php
+│   │   ├── projects.blade.php
+│   │   ├── skills.blade.php
+│   │   ├── education.blade.php
+│   │   ├── contact.blade.php
+│   │   └── preloader.blade.php
+│   ├── sections/partials/project-card.blade.php
+│   ├── pages/project-detail.blade.php
+│   └── portfolio.blade.php
+├── css/app.css
+└── js/app.js
+routes/
+└── web.php          # /portfolio, /portfolio/project/{key}, /contact, /locale/{locale}
+lang/
+├── id/portfolio.php
+└── en/portfolio.php
+```
+
+## Sections
+
+01 Hero — Nama besar, judul, ID\|EN switcher, PortraitSlot, scroll hint  
+02 About — Summary, pull statement, fakta kecil, PortraitSlot (kecil), animated counters  
+03 Experience — Diskominfo Banten, indexed responsibilities, tech tags  
+04 Projects — 2 proyek editorial, screenshot slot 16:9, horizontal scroll, detail route  
+05 Skills — 5 grup (Backend, Frontend, Database, Tools, Additional), tanpa persen  
+06 Education & Certification — S1 Sistem Informasi, sertifikasi kosong state  
+07 Contact — Email, telepon, lokasi, social disabled, contact form  

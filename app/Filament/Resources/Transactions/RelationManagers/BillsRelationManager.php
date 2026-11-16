@@ -61,18 +61,18 @@ class BillsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
-                AttachAction::make(),
+                // CreateAction::make(),
+                // AttachAction::make(),
             ])
             ->recordActions([
-                EditAction::make(),
-                DetachAction::make(),
-                DeleteAction::make(),
+                // EditAction::make(),
+                // DetachAction::make(),
+                // DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DetachBulkAction::make(),
-                    DeleteBulkAction::make(),
+                    // DetachBulkAction::make(),
+                    // DeleteBulkAction::make(),
                 ]),
             ]);
     }

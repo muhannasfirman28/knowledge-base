@@ -14,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'midtrans-callback',
         ]);
+
+        // Named middleware: set application locale from session.
+        $middleware->alias([
+            'locale' => \App\Http\Middleware\SetLocale::class,
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

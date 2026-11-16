@@ -10,6 +10,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
 
 class TenanciesTable
 {
@@ -17,6 +18,10 @@ class TenanciesTable
     {
         return $table
         ->columns([
+            TextColumn::make('room.group.name')
+                ->label('Lokasi')
+                ->searchable(),
+
             TextColumn::make('room.number')
                 ->label('Kamar')
                 ->sortable()
@@ -56,8 +61,17 @@ class TenanciesTable
                 ])
         ])
         ->actions([
-            ViewAction::make(),
+            // ViewAction::make(),
             EditAction::make(),
+            Action::make('kirim portal pembayaran')
+            ->visible(fn ($record) => $record->mainTenant && $record->mainTenant->phone_number)
+                ->label('Pembayaran')
+                  ->url(function ($record) {
+                        $nomor = preg_replace('/[^0-9]/', '', $record->mainTenant->phone_number);
+                        $pesan = urlencode("Link pembayaran: " . route('payment.show', ['tenancy' => $record]));
+                        return "https://wa.me/{$nomor}?text={$pesan}";
+                    }, shouldOpenInNewTab: true)
+                ->icon('heroicon-o-currency-dollar'),
         ])
         ->bulkActions([
             BulkActionGroup::make([

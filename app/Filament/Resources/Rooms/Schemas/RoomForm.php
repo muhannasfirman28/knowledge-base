@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Rooms\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -20,6 +21,12 @@ class RoomForm
                 TextInput::make('number')
                     ->label('Nomor Kamar')
                     ->required(),
+                CheckboxList::make('facilities')
+                    ->label('Fasilitas Kamar')
+                    ->relationship('facilities', 'name') // Relasi ke model Facility, tampilkan kolom 'name'
+                    ->columns(3) // Tampilkan 3 kolom biar rapi
+                    ->gridDirection('row')
+                    ->bulkToggleable(),
                 Toggle::make('is_published')
                     ->label('Publish Kamar')
                     ->helperText('Jika dimatikan, kamar tidak akan muncul di pilihan sewa.')

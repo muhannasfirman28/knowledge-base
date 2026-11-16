@@ -11,8 +11,17 @@ class Group extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'gallery' => 'array',
+    ];
+
     public function rooms()
     {
         return $this->hasMany(Room::class);
+    }
+
+    public function tenancies()
+    {
+        return $this->hasManyThrough(Tenancy::class, Room::class);
     }
 }

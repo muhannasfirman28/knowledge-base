@@ -42,6 +42,7 @@ class TenancyForm
                     DatePicker::make('start_date')
                         ->label('Mulai Huni')
                         ->default(now())
+                        ->minDate(now())
                         ->required(),
 
                     TextInput::make('price_per_month')
@@ -72,14 +73,13 @@ class TenancyForm
                                 ->tel()
                                 ->required(),
                             TextInput::make('email')
-                                ->label('Email')
+                                ->label('Email (opsional)')
                                 ->email(),
                             FileUpload::make('ktp_image')
-                                ->label('Foto KTP')
+                                ->label('Foto KTP (opsional)')
                                 ->disk('public')
                                 ->directory('ktp-uploads')
-                                ->image()
-                                ->required(),
+                                ->image(),
                             Toggle::make('is_main_tenant')
                                 ->label('Penanggung Jawab')
                                 ->helperText('Pilih jika orang ini adalah penanggung jawab.')

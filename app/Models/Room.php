@@ -39,4 +39,9 @@ class Room extends Model
                          $q->where('is_active', true);
                      });
     }
+
+    public function facilities()
+    {
+        return $this->belongsToMany(Facility::class, 'facility_room');
+    }
 }

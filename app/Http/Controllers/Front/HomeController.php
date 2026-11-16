@@ -9,15 +9,6 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        $groups = Group::with(['rooms' => function($q) {
-            $q->published()->orderBy('number');
-        }])->get();
-
-        return view('front.home', compact('groups'));
-    }
-
     public function check(Request $request)
     {
         $request->validate([
@@ -27,5 +18,33 @@ class HomeController extends Controller
         ]);
 
         return redirect()->route('payment.show', $request->tenancy_id);
+    }
+
+    public function index()
+    {
+        $groups = Group::with(['rooms' => function($q) {
+            $q->published()->orderBy('number')->with('facilities');
+        }])->get();
+
+        return view('front.home', compact('groups'));
+    }
+
+    public function term()
+    {
+        return view('front.term');
+    }
+    
+    public function detail(Group $group)
+    {
+        $group->load(['rooms' => function($q) {
+            $q->published()->orderBy('number')->with('facilities');
+        }]);
+
+        return view('front.group_detail', compact('group'));
+    }
+
+    public function about()
+    {
+        return view('front.about');
     }
 }

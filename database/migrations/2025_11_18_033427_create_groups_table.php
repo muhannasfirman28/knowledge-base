@@ -15,6 +15,8 @@ return new class extends Migration
             $table->ulid('id')->primary();
             $table->string('name');
             $table->text('address');
+            $table->text('google_maps_embed')->nullable();
+            $table->json('gallery')->nullable();
             $table->timestamps();
         });
     }

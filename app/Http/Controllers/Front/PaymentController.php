@@ -23,17 +23,42 @@ class PaymentController extends Controller
         Config::$is3ds = true;
     }
 
+    protected $expiryUnit = 'day';
+    protected $expiryDuration = 1;  
 
     public function show(Tenancy $tenancy)
     {
-        $tenancy->load(['room.group', 'mainTenant', 'bills' => function($q) {
-            $q->whereDoesntHave('transactions', function ($subQ) {
-                $subQ->whereIn('status', ['settlement', 'capture']);
-            })->orderBy('order_sequence');
-        }]);
+        // 1. Load data relasi dasar
+        $tenancy->load(['room.group', 'mainTenant']);
 
-        return view('front.payment', compact('tenancy'));
+        // 2. Tagihan Belum Lunas (Untuk Form Bayar Baru)
+        $unpaidBills = $tenancy->bills()
+            ->unpaid()
+            ->orderBy('order_sequence', 'asc')
+            ->get();
+
+        // 3. Transaksi Pending (Active Transactions)
+        // User bisa resume pembayaran (Snap Token) dari sini
+        $pendingTransactions = Transaction::where('tenancy_id', $tenancy->id)
+            ->where('status', 'pending')
+            ->with('bills') // Load tagihan apa saja di dalamnya
+            ->latest()
+            ->get();
+
+        // 4. Riwayat Pembayaran (Lunas)
+        $historyBills = $tenancy->bills()
+            ->paid()
+            ->orderBy('order_sequence', 'desc')
+            ->get();
+
+        $expiryConfig = [
+            'unit' => $this->expiryUnit,
+            'duration' => $this->expiryDuration
+        ];
+
+        return view('front.payment', compact('tenancy', 'unpaidBills', 'pendingTransactions', 'historyBills', 'expiryConfig'));
     }
+    
     public function process(Request $request)
     {
         $request->validate([
@@ -41,6 +66,16 @@ class PaymentController extends Controller
             'bill_ids' => 'required|array|min:1',
             'bill_ids.*' => 'exists:bills,id'
         ]);
+
+        $hasPending = Transaction::where('tenancy_id', $request->tenancy_id)
+            ->where('status', 'pending')
+            ->exists();
+
+        if ($hasPending) {
+            return response()->json([
+                'error' => 'Anda memiliki transaksi yang sedang berjalan. Mohon selesaikan atau batalkan transaksi tersebut di tab "Sedang Berjalan".'
+            ], 400);
+        }
 
         $bills = Bill::whereIn('id', $request->bill_ids)->get();
         $totalAmount = (int) $bills->sum('amount');
@@ -56,6 +91,13 @@ class PaymentController extends Controller
         ]);
 
         $transaction->bills()->attach($request->bill_ids);
+
+        $expirySettings = [
+            'start_time' => date('Y-m-d H:i:s O'), 
+            'unit'       => $this->expiryUnit,
+            'duration'   => $this->expiryDuration
+        ];
+
 
         $params = [
             'transaction_details' => [
@@ -75,12 +117,7 @@ class PaymentController extends Controller
                 ];
             })->toArray(),
 
-            'expiry' => [
-                'start_time' => date('Y-m-d H:i:s O'),
-                'unit' => 'minute',
-                'duration' => 10
-            ],
-
+            'expiry' => $expirySettings,
             'callbacks' => [
                 'finish' => route('home')
             ],
@@ -95,6 +132,17 @@ class PaymentController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function cancel(Transaction $transaction)
+    {
+        if ($transaction->status === 'pending') {
+            $transaction->update(['status' => 'cancel']);
+            
+            return back()->with('success', 'Transaksi berhasil dibatalkan. Silakan buat pembayaran baru.');
+        }
+
+        return back()->with('error', 'Transaksi tidak dapat dibatalkan.');
     }
 
     public function callback(Request $request)

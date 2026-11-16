@@ -15,11 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Buat akun admin default untuk mengelola portofolio
+        User::create([
+            'name' => 'Admin Portfolio',
+            'email' => 'admin@portfolio.local',
+            'password' => bcrypt('admin123'),
+            'role' => 'admin',
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Seed data profil dan skill awal
+        $this->call([
+            PortfolioSeeder::class,
         ]);
     }
 }

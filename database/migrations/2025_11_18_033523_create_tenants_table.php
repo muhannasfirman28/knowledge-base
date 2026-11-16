@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('phone_number')->nullable();
             $table->string('email')->nullable();
-            $table->string('ktp_image');
+            $table->string('ktp_image')->nullable();
             $table->boolean('is_main_tenant')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

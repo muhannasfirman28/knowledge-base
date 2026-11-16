@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Groups;
 
+use App\Filament\Resources\Groups\RelationManagers\TenanciesRelationManager;
 use App\Filament\Resources\Groups\Pages\CreateGroup;
 use App\Filament\Resources\Groups\Pages\EditGroup;
 use App\Filament\Resources\Groups\Pages\ListGroups;
+use App\Filament\Resources\Groups\RelationManagers\RoomsRelationManager;
 use App\Filament\Resources\Groups\Schemas\GroupForm;
 use App\Filament\Resources\Groups\Tables\GroupsTable;
 use App\Models\Group;
@@ -13,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class GroupResource extends Resource
 {
@@ -21,6 +24,10 @@ class GroupResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?string $navigationLabel = "Grup";
+
+    protected static string|UnitEnum|null $navigationGroup = 'Kost';
 
     public static function form(Schema $schema): Schema
     {
@@ -35,7 +42,8 @@ class GroupResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RoomsRelationManager::class,
+            TenanciesRelationManager::class
         ];
     }
 
